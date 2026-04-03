@@ -25,8 +25,8 @@ For Windows/Pharo, the recommended setup is WebSocket transport with the app-ser
 
 ```smalltalk
 Metacello new
+	repository: 'github://StefanKrecher/PharoCodex';
 	baseline: 'OpenAICodex';
-	repository: 'tonel://<path-to-this-repo>/src';
 	load.
 ```
 
