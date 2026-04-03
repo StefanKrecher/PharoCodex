@@ -1,41 +1,41 @@
 Class {
-	#name : #OpenAICodexZnWebSocketConnection,
-	#superclass : #OpenAICodexWebSocketConnection,
+	#name : 'OpenAICodexZnWebSocketConnection',
+	#superclass : 'OpenAICodexWebSocketConnection',
 	#instVars : [
 		'webSocket'
 	],
-	#category : #'OpenAI-Codex-Transport-WebSocket',
-	#package : #'OpenAI-Codex'
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 OpenAICodexZnWebSocketConnection class >> on: aZnWebSocket [
 	^ self new
 		webSocket: aZnWebSocket;
 		yourself
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 OpenAICodexZnWebSocketConnection >> close [
 	webSocket ifNotNil: [ webSocket close ]
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 OpenAICodexZnWebSocketConnection >> isConnected [
 	^ webSocket notNil
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexZnWebSocketConnection >> readMessage [
 	^ webSocket readMessage
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexZnWebSocketConnection >> sendMessage: aString [
 	webSocket sendMessage: aString
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexZnWebSocketConnection >> webSocket: aZnWebSocket [
 	webSocket := aZnWebSocket
 ]

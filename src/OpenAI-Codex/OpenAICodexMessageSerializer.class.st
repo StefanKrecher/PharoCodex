@@ -1,11 +1,11 @@
 Class {
-	#name : #OpenAICodexMessageSerializer,
-	#superclass : #Object,
-	#category : #'OpenAI-Codex-Core',
-	#package : #'OpenAI-Codex'
+	#name : 'OpenAICodexMessageSerializer',
+	#superclass : 'Object',
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }
 
-{ #category : #serializing }
+{ #category : 'serializing' }
 OpenAICodexMessageSerializer >> deserializeMessage: aString [
 	| message |
 	message := NeoJSONReader fromString: aString.
@@ -14,7 +14,7 @@ OpenAICodexMessageSerializer >> deserializeMessage: aString [
 	^ message asDictionary
 ]
 
-{ #category : #serializing }
+{ #category : 'serializing' }
 OpenAICodexMessageSerializer >> serializeMessage: aDictionary [
 	aDictionary isDictionary ifFalse: [
 		OpenAICodexProtocolError signal: 'App-server messages must be serialized from dictionaries' ].

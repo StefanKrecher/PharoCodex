@@ -1,16 +1,16 @@
 Class {
-	#name : #OpenAICodexMemoryTransport,
-	#superclass : #OpenAICodexTransport,
+	#name : 'OpenAICodexMemoryTransport',
+	#superclass : 'OpenAICodexTransport',
 	#instVars : [
 		'incomingMessages',
 		'outgoingMessages',
 		'started'
 	],
-	#category : #'OpenAI-Codex-Transport',
-	#package : #'OpenAI-Codex'
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 OpenAICodexMemoryTransport >> initialize [
 	super initialize.
 	incomingMessages := OrderedCollection new.
@@ -18,43 +18,43 @@ OpenAICodexMemoryTransport >> initialize [
 	started := false
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 OpenAICodexMemoryTransport >> isStarted [
 	^ started
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexMemoryTransport >> nextMessage [
 	incomingMessages ifEmpty: [ ^ nil ].
 	^ incomingMessages removeFirst
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexMemoryTransport >> outgoingMessages [
 	^ outgoingMessages copy
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexMemoryTransport >> queueIncomingMessage: aDictionary [
 	incomingMessages add: aDictionary
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexMemoryTransport >> queueIncomingMessages: aCollection [
 	aCollection do: [ :each | self queueIncomingMessage: each ]
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexMemoryTransport >> sendMessage: aDictionary [
 	outgoingMessages add: aDictionary
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 OpenAICodexMemoryTransport >> start [
 	started := true
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 OpenAICodexMemoryTransport >> stop [
 	started := false
 ]

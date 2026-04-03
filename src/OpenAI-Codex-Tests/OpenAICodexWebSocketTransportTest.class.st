@@ -1,16 +1,16 @@
 Class {
-	#name : #OpenAICodexWebSocketTransportTest,
-	#superclass : #TestCase,
+	#name : 'OpenAICodexWebSocketTransportTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'factory',
 		'transport',
 		'serializer'
 	],
-	#category : #'OpenAI-Codex-Tests-Transport',
-	#package : #'OpenAI-Codex-Tests'
+	#category : 'OpenAI-Codex-Tests',
+	#package : 'OpenAI-Codex-Tests'
 }
 
-{ #category : #running }
+{ #category : 'running' }
 OpenAICodexWebSocketTransportTest >> setUp [
 	super setUp.
 	factory := OpenAICodexFakeWebSocketConnectionFactory new.
@@ -19,13 +19,13 @@ OpenAICodexWebSocketTransportTest >> setUp [
 	serializer := OpenAICodexMessageSerializer new
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 OpenAICodexWebSocketTransportTest >> tearDown [
 	transport stop.
 	super tearDown
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 OpenAICodexWebSocketTransportTest >> testReadsIncomingMessageFromConnection [
 	| decoded |
 	factory connection nextIncomingMessagePut: '{"method":"thread/started","params":{"threadId":"thr_1"}}'.
@@ -35,7 +35,7 @@ OpenAICodexWebSocketTransportTest >> testReadsIncomingMessageFromConnection [
 	self assert: (decoded at: 'method') equals: 'thread/started'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 OpenAICodexWebSocketTransportTest >> testSendsSerializedJsonToConnection [
 	transport start.
 	transport sendMessage: (
@@ -48,7 +48,7 @@ OpenAICodexWebSocketTransportTest >> testSendsSerializedJsonToConnection [
 	self assert: ((serializer deserializeMessage: factory connection outgoingMessages first) at: 'method') equals: 'initialize'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 OpenAICodexWebSocketTransportTest >> testStartUsesConfiguredUrl [
 	transport start.
 	self assert: factory lastOpenedUrl equals: 'ws://127.0.0.1:8787'

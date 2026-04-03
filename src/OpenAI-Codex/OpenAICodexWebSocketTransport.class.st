@@ -1,6 +1,6 @@
 Class {
-	#name : #OpenAICodexWebSocketTransport,
-	#superclass : #OpenAICodexTransport,
+	#name : 'OpenAICodexWebSocketTransport',
+	#superclass : 'OpenAICodexTransport',
 	#instVars : [
 		'url',
 		'serializer',
@@ -12,23 +12,23 @@ Class {
 		'started',
 		'lastReadError'
 	],
-	#category : #'OpenAI-Codex-Transport-WebSocket',
-	#package : #'OpenAI-Codex'
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 OpenAICodexWebSocketTransport class >> toUrl: aString [
 	^ self new
 		url: aString;
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexWebSocketTransport >> connectionFactory: aFactory [
 	connectionFactory := aFactory
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 OpenAICodexWebSocketTransport >> initialize [
 	super initialize.
 	serializer := OpenAICodexMessageSerializer new.
@@ -38,17 +38,17 @@ OpenAICodexWebSocketTransport >> initialize [
 	started := false
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 OpenAICodexWebSocketTransport >> isStarted [
 	^ started and: [ connection notNil and: [ connection isConnected ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexWebSocketTransport >> lastReadError [
 	^ lastReadError
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexWebSocketTransport >> nextMessage [
 	| message |
 	message := nil.
@@ -58,13 +58,13 @@ OpenAICodexWebSocketTransport >> nextMessage [
 	^ message
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexWebSocketTransport >> queueIncomingMessage: aDictionary [
 	queueLock critical: [
 		incomingMessages add: aDictionary ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexWebSocketTransport >> readLoop [
 	| messageText |
 	[
@@ -80,13 +80,13 @@ OpenAICodexWebSocketTransport >> readLoop [
 			started := false ]
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexWebSocketTransport >> sendMessage: aDictionary [
 	connection ifNil: [ OpenAICodexTransportError signal: 'Cannot send before transport start' ].
 	connection sendMessage: (serializer serializeMessage: aDictionary)
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 OpenAICodexWebSocketTransport >> start [
 	connection ifNotNil: [ ^ self ].
 	url ifNil: [ OpenAICodexTransportError signal: 'A WebSocket URL must be configured' ].
@@ -96,7 +96,7 @@ OpenAICodexWebSocketTransport >> start [
 	^ self
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 OpenAICodexWebSocketTransport >> stop [
 	started := false.
 	connection ifNotNil: [
@@ -107,12 +107,12 @@ OpenAICodexWebSocketTransport >> stop [
 		readerProcess := nil ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexWebSocketTransport >> url [
 	^ url
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexWebSocketTransport >> url: aString [
 	url := aString
 ]

@@ -1,6 +1,6 @@
 Class {
-	#name : #OpenAICodexSession,
-	#superclass : #Object,
+	#name : 'OpenAICodexSession',
+	#superclass : 'Object',
 	#instVars : [
 		'transport',
 		'announcer',
@@ -10,33 +10,33 @@ Class {
 		'defaultTimeoutMs',
 		'initializationResult'
 	],
-	#category : #'OpenAI-Codex-Core',
-	#package : #'OpenAI-Codex'
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 OpenAICodexSession class >> onTransport: aTransport [
 	^ self new
 		transport: aTransport;
 		yourself
 ]
 
-{ #category : #announcements }
+{ #category : 'announcements' }
 OpenAICodexSession >> announcer [
 	^ announcer
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexSession >> defaultTimeoutMs [
 	^ defaultTimeoutMs
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexSession >> defaultTimeoutMs: anInteger [
 	defaultTimeoutMs := anInteger
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSession >> dispatchServerRequest: aDictionary [
 	| handler result |
 	handler := serverRequestHandlers at: (aDictionary at: 'method') ifAbsent: [ nil ].
@@ -51,7 +51,12 @@ OpenAICodexSession >> dispatchServerRequest: aDictionary [
 	self replyToServerRequestId: (aDictionary at: 'id') withResult: result
 ]
 
-{ #category : #private }
+{ #category : 'messaging' }
+OpenAICodexSession >> executeCommandWithParameters: aDictionary [
+	^ self performMethod: 'command/exec' parameters: aDictionary
+]
+
+{ #category : 'private' }
 OpenAICodexSession >> handleIncomingMessage: aDictionary [
 	(aDictionary includesKey: 'method')
 		ifTrue: [
@@ -66,7 +71,12 @@ OpenAICodexSession >> handleIncomingMessage: aDictionary [
 	self announcer announce: (OpenAICodexResponseAnnouncement message: aDictionary)
 ]
 
-{ #category : #initialization }
+{ #category : 'accessing' }
+OpenAICodexSession >> initializationResult [
+	^ initializationResult
+]
+
+{ #category : 'initialization' }
 OpenAICodexSession >> initialize [
 	super initialize.
 	announcer := Announcer new.
@@ -76,12 +86,12 @@ OpenAICodexSession >> initialize [
 	defaultTimeoutMs := 5000
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 OpenAICodexSession >> initializeClientNamed: aName title: aTitle version: aVersion [
 	^ self initializeClientNamed: aName title: aTitle version: aVersion experimentalApi: false
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 OpenAICodexSession >> initializeClientNamed: aName title: aTitle version: aVersion experimentalApi: aBoolean [
 	| capabilities params |
 	capabilities := Dictionary new.
@@ -100,17 +110,22 @@ OpenAICodexSession >> initializeClientNamed: aName title: aTitle version: aVersi
 	^ initializationResult
 ]
 
-{ #category : #testing }
+{ #category : 'messaging' }
+OpenAICodexSession >> interruptTurnWithParameters: aDictionary [
+	^ self performMethod: 'turn/interrupt' parameters: aDictionary
+]
+
+{ #category : 'testing' }
 OpenAICodexSession >> isStarted [
 	^ transport notNil and: [ transport isStarted ]
 ]
 
-{ #category : #accessing }
-OpenAICodexSession >> initializationResult [
-	^ initializationResult
+{ #category : 'accessing' }
+OpenAICodexSession >> listMcpServerStatus [
+	^ self performMethod: 'mcpServerStatus/list' parameters: Dictionary new
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSession >> nextRequestId [
 	| requestId |
 	requestId := nextRequestId.
@@ -118,7 +133,7 @@ OpenAICodexSession >> nextRequestId [
 	^ requestId
 ]
 
-{ #category : #announcements }
+{ #category : 'announcements' }
 OpenAICodexSession >> on: anAnnouncementClass do: aBlock [
 	^ self announcer
 		when: anAnnouncementClass
@@ -126,37 +141,37 @@ OpenAICodexSession >> on: anAnnouncementClass do: aBlock [
 		for: aBlock
 ]
 
-{ #category : #approvals }
+{ #category : 'approvals' }
 OpenAICodexSession >> onCommandApprovalDo: aBlock [
 	self whenServerRequest: 'item/commandExecution/requestApproval' do: aBlock
 ]
 
-{ #category : #approvals }
+{ #category : 'approvals' }
 OpenAICodexSession >> onFileChangeApprovalDo: aBlock [
 	self whenServerRequest: 'item/fileChange/requestApproval' do: aBlock
 ]
 
-{ #category : #approvals }
-OpenAICodexSession >> onPermissionsApprovalDo: aBlock [
-	self whenServerRequest: 'item/permissions/requestApproval' do: aBlock
-]
-
-{ #category : #approvals }
-OpenAICodexSession >> onToolUserInputRequestDo: aBlock [
-	self whenServerRequest: 'item/tool/requestUserInput' do: aBlock
-]
-
-{ #category : #approvals }
+{ #category : 'approvals' }
 OpenAICodexSession >> onMcpElicitationRequestDo: aBlock [
 	self whenServerRequest: 'mcpServer/elicitation/request' do: aBlock
 ]
 
-{ #category : #private }
+{ #category : 'approvals' }
+OpenAICodexSession >> onPermissionsApprovalDo: aBlock [
+	self whenServerRequest: 'item/permissions/requestApproval' do: aBlock
+]
+
+{ #category : 'approvals' }
+OpenAICodexSession >> onToolUserInputRequestDo: aBlock [
+	self whenServerRequest: 'item/tool/requestUserInput' do: aBlock
+]
+
+{ #category : 'private' }
 OpenAICodexSession >> performMethod: aMethod parameters: aDictionary [
 	^ self performMethod: aMethod parameters: aDictionary timeoutMs: self defaultTimeoutMs
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSession >> performMethod: aMethod parameters: aDictionary timeoutMs: timeoutMs [
 	| requestId request response |
 	requestId := self nextRequestId.
@@ -172,12 +187,21 @@ OpenAICodexSession >> performMethod: aMethod parameters: aDictionary timeoutMs: 
 	^ response at: 'result' ifAbsent: [ Dictionary new ]
 ]
 
-{ #category : #accessing }
+{ #category : 'private' }
+OpenAICodexSession >> pumpIncomingMessages [
+	| message |
+	[
+		message := transport nextMessage.
+		message notNil ] whileTrue: [
+			self handleIncomingMessage: message ]
+]
+
+{ #category : 'accessing' }
 OpenAICodexSession >> readAccount [
 	^ self performMethod: 'account/read' parameters: Dictionary new
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexSession >> readThread: aThreadId includeTurns: aBoolean [
 	^ self readThreadWithParameters: (
 		Dictionary new
@@ -186,12 +210,12 @@ OpenAICodexSession >> readThread: aThreadId includeTurns: aBoolean [
 			yourself)
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexSession >> readThreadWithParameters: aDictionary [
 	^ self performMethod: 'thread/read' parameters: aDictionary
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexSession >> replyToServerRequestId: anId withErrorCode: anInteger message: aString data: aDictionaryOrNil [
 	| errorPayload response |
 	errorPayload := Dictionary new
@@ -206,7 +230,7 @@ OpenAICodexSession >> replyToServerRequestId: anId withErrorCode: anInteger mess
 	transport sendMessage: response
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexSession >> replyToServerRequestId: anId withResult: aValue [
 	| response |
 	response := Dictionary new
@@ -216,12 +240,12 @@ OpenAICodexSession >> replyToServerRequestId: anId withResult: aValue [
 	transport sendMessage: response
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexSession >> resumeThreadWithParameters: aDictionary [
 	^ self performMethod: 'thread/resume' parameters: aDictionary
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexSession >> sendNotificationMethod: aMethod parameters: aDictionary [
 	transport sendMessage: (
 		Dictionary new
@@ -230,39 +254,19 @@ OpenAICodexSession >> sendNotificationMethod: aMethod parameters: aDictionary [
 			yourself)
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexSession >> start [
 	transport ifNil: [ OpenAICodexTransportError signal: 'A transport must be configured before session start' ].
 	transport start.
 	^ self
 ]
 
-{ #category : #messaging }
-OpenAICodexSession >> startThread [
-	^ self startThreadWithParameters: Dictionary new
-]
-
-{ #category : #messaging }
-OpenAICodexSession >> startThreadWithParameters: aDictionary [
-	^ self performMethod: 'thread/start' parameters: aDictionary
-]
-
-{ #category : #messaging }
-OpenAICodexSession >> startThreadInWorkingDirectory: aPathString approvalPolicy: anApprovalPolicy [
-	| params |
-	params := Dictionary new
-		at: 'cwd' put: aPathString;
-		yourself.
-	anApprovalPolicy ifNotNil: [ params at: 'approvalPolicy' put: anApprovalPolicy ].
-	^ self startThreadWithParameters: params
-]
-
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexSession >> startTextTurnInThread: aThreadId text: aString [
 	^ self startTextTurnInThread: aThreadId text: aString approvalPolicy: nil
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexSession >> startTextTurnInThread: aThreadId text: aString approvalPolicy: anApprovalPolicy [
 	| params |
 	params := Dictionary new
@@ -277,12 +281,32 @@ OpenAICodexSession >> startTextTurnInThread: aThreadId text: aString approvalPol
 	^ self startTurnWithParameters: params
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
+OpenAICodexSession >> startThread [
+	^ self startThreadWithParameters: Dictionary new
+]
+
+{ #category : 'messaging' }
+OpenAICodexSession >> startThreadInWorkingDirectory: aPathString approvalPolicy: anApprovalPolicy [
+	| params |
+	params := Dictionary new
+		at: 'cwd' put: aPathString;
+		yourself.
+	anApprovalPolicy ifNotNil: [ params at: 'approvalPolicy' put: anApprovalPolicy ].
+	^ self startThreadWithParameters: params
+]
+
+{ #category : 'messaging' }
+OpenAICodexSession >> startThreadWithParameters: aDictionary [
+	^ self performMethod: 'thread/start' parameters: aDictionary
+]
+
+{ #category : 'messaging' }
 OpenAICodexSession >> startTurnWithParameters: aDictionary [
 	^ self performMethod: 'turn/start' parameters: aDictionary
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexSession >> steerTextTurnInThread: aThreadId turnId: aTurnId text: aString [
 	^ self performMethod: 'turn/steer' parameters: (
 		Dictionary new
@@ -296,32 +320,22 @@ OpenAICodexSession >> steerTextTurnInThread: aThreadId turnId: aTurnId text: aSt
 			yourself)
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexSession >> stop [
 	transport ifNotNil: [ transport stop ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexSession >> transport [
 	^ transport
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexSession >> transport: aTransport [
 	transport := aTransport
 ]
 
-{ #category : #messaging }
-OpenAICodexSession >> executeCommandWithParameters: aDictionary [
-	^ self performMethod: 'command/exec' parameters: aDictionary
-]
-
-{ #category : #accessing }
-OpenAICodexSession >> listMcpServerStatus [
-	^ self performMethod: 'mcpServerStatus/list' parameters: Dictionary new
-]
-
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSession >> waitForResponseTo: requestId timeoutMs: timeoutMs [
 	| deadline response |
 	deadline := Time millisecondClockValue + timeoutMs.
@@ -334,21 +348,7 @@ OpenAICodexSession >> waitForResponseTo: requestId timeoutMs: timeoutMs [
 	OpenAICodexTimeoutError signal: 'Timed out waiting for app-server response'
 ]
 
-{ #category : #private }
-OpenAICodexSession >> pumpIncomingMessages [
-	| message |
-	[
-		message := transport nextMessage.
-		message notNil ] whileTrue: [
-			self handleIncomingMessage: message ]
-]
-
-{ #category : #messaging }
-OpenAICodexSession >> interruptTurnWithParameters: aDictionary [
-	^ self performMethod: 'turn/interrupt' parameters: aDictionary
-]
-
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexSession >> whenServerRequest: aMethod do: aBlock [
 	serverRequestHandlers at: aMethod put: aBlock
 ]

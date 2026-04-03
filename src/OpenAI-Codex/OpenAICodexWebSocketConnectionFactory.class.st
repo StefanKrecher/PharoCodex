@@ -1,29 +1,29 @@
 Class {
-	#name : #OpenAICodexWebSocketConnectionFactory,
-	#superclass : #Object,
+	#name : 'OpenAICodexWebSocketConnectionFactory',
+	#superclass : 'Object',
 	#classVars : [
 		'Current'
 	],
-	#category : #'OpenAI-Codex-Transport-WebSocket',
-	#package : #'OpenAI-Codex'
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexWebSocketConnectionFactory class >> current [
 	^ Current ifNil: [ Current := OpenAICodexZnWebSocketConnectionFactory new ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexWebSocketConnectionFactory class >> current: aFactory [
 	Current := aFactory
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexWebSocketConnectionFactory class >> resetCurrent [
 	Current := nil
 ]
 
-{ #category : #opening }
+{ #category : 'opening' }
 OpenAICodexWebSocketConnectionFactory >> openUrl: aString [
 	self subclassResponsibility
 ]

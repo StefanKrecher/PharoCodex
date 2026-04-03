@@ -1,38 +1,38 @@
 Class {
-	#name : #OpenAICodexFakeSubprocessFactory,
-	#superclass : #OpenAICodexSubprocessFactory,
+	#name : 'OpenAICodexFakeSubprocessFactory',
+	#superclass : 'OpenAICodexSubprocessFactory',
 	#instVars : [
 		'subprocess',
 		'lastSpawnCommand',
 		'lastSpawnArguments',
 		'lastSpawnWorkingDirectory'
 	],
-	#category : #'OpenAI-Codex-Tests-Support',
-	#package : #'OpenAI-Codex-Tests'
+	#category : 'OpenAI-Codex-Tests',
+	#package : 'OpenAI-Codex-Tests'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 OpenAICodexFakeSubprocessFactory >> initialize [
 	super initialize.
 	subprocess := OpenAICodexFakeLineSubprocess new
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexFakeSubprocessFactory >> lastSpawnArguments [
 	^ lastSpawnArguments
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexFakeSubprocessFactory >> lastSpawnCommand [
 	^ lastSpawnCommand
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexFakeSubprocessFactory >> lastSpawnWorkingDirectory [
 	^ lastSpawnWorkingDirectory
 ]
 
-{ #category : #spawning }
+{ #category : 'spawning' }
 OpenAICodexFakeSubprocessFactory >> spawnCommand: aCommand arguments: arguments workingDirectory: aPathOrNil [
 	lastSpawnCommand := aCommand.
 	lastSpawnArguments := arguments.
@@ -40,7 +40,7 @@ OpenAICodexFakeSubprocessFactory >> spawnCommand: aCommand arguments: arguments 
 	^ subprocess
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexFakeSubprocessFactory >> subprocess [
 	^ subprocess
 ]

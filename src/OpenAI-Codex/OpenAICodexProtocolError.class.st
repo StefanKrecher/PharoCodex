@@ -1,6 +1,6 @@
 Class {
-	#name : #OpenAICodexProtocolError,
-	#superclass : #OpenAICodexError,
-	#category : #'OpenAI-Codex-Core',
-	#package : #'OpenAI-Codex'
+	#name : 'OpenAICodexProtocolError',
+	#superclass : 'OpenAICodexError',
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }

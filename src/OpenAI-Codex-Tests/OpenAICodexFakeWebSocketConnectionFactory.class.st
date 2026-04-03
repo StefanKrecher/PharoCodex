@@ -1,31 +1,31 @@
 Class {
-	#name : #OpenAICodexFakeWebSocketConnectionFactory,
-	#superclass : #OpenAICodexWebSocketConnectionFactory,
+	#name : 'OpenAICodexFakeWebSocketConnectionFactory',
+	#superclass : 'OpenAICodexWebSocketConnectionFactory',
 	#instVars : [
 		'connection',
 		'lastOpenedUrl'
 	],
-	#category : #'OpenAI-Codex-Tests-Support',
-	#package : #'OpenAI-Codex-Tests'
+	#category : 'OpenAI-Codex-Tests',
+	#package : 'OpenAI-Codex-Tests'
 }
 
-{ #category : #initialization }
+{ #category : 'accessing' }
+OpenAICodexFakeWebSocketConnectionFactory >> connection [
+	^ connection
+]
+
+{ #category : 'initialization' }
 OpenAICodexFakeWebSocketConnectionFactory >> initialize [
 	super initialize.
 	connection := OpenAICodexFakeWebSocketConnection new
 ]
 
-{ #category : #accessing }
-OpenAICodexFakeWebSocketConnectionFactory >> connection [
-	^ connection
-]
-
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexFakeWebSocketConnectionFactory >> lastOpenedUrl [
 	^ lastOpenedUrl
 ]
 
-{ #category : #opening }
+{ #category : 'opening' }
 OpenAICodexFakeWebSocketConnectionFactory >> openUrl: aString [
 	lastOpenedUrl := aString.
 	^ connection

@@ -1,16 +1,16 @@
 Class {
-	#name : #OpenAICodexStdioTransportTest,
-	#superclass : #TestCase,
+	#name : 'OpenAICodexStdioTransportTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'factory',
 		'transport',
 		'serializer'
 	],
-	#category : #'OpenAI-Codex-Tests-Transport',
-	#package : #'OpenAI-Codex-Tests'
+	#category : 'OpenAI-Codex-Tests',
+	#package : 'OpenAI-Codex-Tests'
 }
 
-{ #category : #running }
+{ #category : 'running' }
 OpenAICodexStdioTransportTest >> setUp [
 	super setUp.
 	factory := OpenAICodexFakeSubprocessFactory new.
@@ -19,7 +19,7 @@ OpenAICodexStdioTransportTest >> setUp [
 	serializer := OpenAICodexMessageSerializer new
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 OpenAICodexStdioTransportTest >> testReadsMessagesFromSubprocessLineProtocol [
 	| decoded |
 	factory subprocess queueIncomingLine: '{"method":"thread/started","params":{"threadId":"thr_1"}}'.
@@ -28,7 +28,7 @@ OpenAICodexStdioTransportTest >> testReadsMessagesFromSubprocessLineProtocol [
 	self assert: (decoded at: 'method') equals: 'thread/started'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 OpenAICodexStdioTransportTest >> testStartUsesConfiguredFactory [
 	transport workingDirectory: 'C:/workspace'.
 	transport start.
@@ -37,7 +37,7 @@ OpenAICodexStdioTransportTest >> testStartUsesConfiguredFactory [
 	self assert: factory lastSpawnWorkingDirectory equals: 'C:/workspace'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 OpenAICodexStdioTransportTest >> testWriteSerializesToOneJsonLine [
 	transport start.
 	transport sendMessage: (

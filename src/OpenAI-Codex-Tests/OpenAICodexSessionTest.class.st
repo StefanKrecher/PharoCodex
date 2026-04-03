@@ -1,15 +1,15 @@
 Class {
-	#name : #OpenAICodexSessionTest,
-	#superclass : #TestCase,
+	#name : 'OpenAICodexSessionTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'session',
 		'transport'
 	],
-	#category : #'OpenAI-Codex-Tests-Core',
-	#package : #'OpenAI-Codex-Tests'
+	#category : 'OpenAI-Codex-Tests',
+	#package : 'OpenAI-Codex-Tests'
 }
 
-{ #category : #running }
+{ #category : 'running' }
 OpenAICodexSessionTest >> setUp [
 	super setUp.
 	transport := OpenAICodexMemoryTransport new.
@@ -17,13 +17,13 @@ OpenAICodexSessionTest >> setUp [
 	session start
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 OpenAICodexSessionTest >> tearDown [
 	session stop.
 	super tearDown
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 OpenAICodexSessionTest >> testApprovalHandlerRepliesToServerRequest [
 	transport queueIncomingMessage: (
 		Dictionary new
@@ -37,7 +37,20 @@ OpenAICodexSessionTest >> testApprovalHandlerRepliesToServerRequest [
 	self assert: ((transport outgoingMessages first) at: 'result') equals: 'accept'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
+OpenAICodexSessionTest >> testInitializeSendsInitializedNotification [
+	transport queueIncomingMessage: (
+		Dictionary new
+			at: 'id' put: 1;
+			at: 'result' put: (Dictionary new at: 'sessionId' put: 'sess_1'; yourself);
+			yourself).
+	session initializeClientNamed: 'pharo_codex' title: 'Pharo Codex' version: '0.1.0'.
+	self assert: transport outgoingMessages size equals: 2.
+	self assert: ((transport outgoingMessages first) at: 'method') equals: 'initialize'.
+	self assert: ((transport outgoingMessages second) at: 'method') equals: 'initialized'
+]
+
+{ #category : 'tests' }
 OpenAICodexSessionTest >> testMissingServerRequestHandlerRepliesWithMethodNotFoundError [
 	transport queueIncomingMessage: (
 		Dictionary new
@@ -51,20 +64,7 @@ OpenAICodexSessionTest >> testMissingServerRequestHandlerRepliesWithMethodNotFou
 	self assert: ((((transport outgoingMessages first) at: 'error') at: 'code')) equals: -32601
 ]
 
-{ #category : #tests }
-OpenAICodexSessionTest >> testInitializeSendsInitializedNotification [
-	transport queueIncomingMessage: (
-		Dictionary new
-			at: 'id' put: 1;
-			at: 'result' put: (Dictionary new at: 'sessionId' put: 'sess_1'; yourself);
-			yourself).
-	session initializeClientNamed: 'pharo_codex' title: 'Pharo Codex' version: '0.1.0'.
-	self assert: transport outgoingMessages size equals: 2.
-	self assert: ((transport outgoingMessages first) at: 'method') equals: 'initialize'.
-	self assert: ((transport outgoingMessages second) at: 'method') equals: 'initialized'
-]
-
-{ #category : #tests }
+{ #category : 'tests' }
 OpenAICodexSessionTest >> testNotificationIsAnnounced [
 	| seen |
 	seen := OrderedCollection new.
@@ -78,7 +78,7 @@ OpenAICodexSessionTest >> testNotificationIsAnnounced [
 	self assert: seen asArray equals: #( 'turn/completed' )
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 OpenAICodexSessionTest >> testPermissionsApprovalHandlerCanReturnRequestedPermissions [
 	transport queueIncomingMessage: (
 		Dictionary new
@@ -98,7 +98,7 @@ OpenAICodexSessionTest >> testPermissionsApprovalHandlerCanReturnRequestedPermis
 	self assert: ((((transport outgoingMessages first) at: 'result') at: 'scope')) equals: 'turn'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 OpenAICodexSessionTest >> testReadThreadWithTurnsUsesExpectedMethod [
 	transport queueIncomingMessage: (
 		Dictionary new
@@ -111,7 +111,7 @@ OpenAICodexSessionTest >> testReadThreadWithTurnsUsesExpectedMethod [
 	self assert: (((transport outgoingMessages first) at: 'params') at: 'includeTurns') equals: true
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 OpenAICodexSessionTest >> testStartTextTurnBuildsTextInputPayload [
 	transport queueIncomingMessage: (
 		Dictionary new
@@ -125,7 +125,17 @@ OpenAICodexSessionTest >> testStartTextTurnBuildsTextInputPayload [
 	self assert: ((((transport outgoingMessages first) at: 'params') at: 'input') first at: 'text') equals: 'hello'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
+OpenAICodexSessionTest >> testStartThreadReturnsResultPayload [
+	transport queueIncomingMessage: (
+		Dictionary new
+			at: 'id' put: 1;
+			at: 'result' put: (Dictionary new at: 'thread' put: (Dictionary new at: 'id' put: 'thr_123'; yourself); yourself);
+			yourself).
+	self assert: (((session startThread) at: 'thread') at: 'id') equals: 'thr_123'
+]
+
+{ #category : 'tests' }
 OpenAICodexSessionTest >> testStatusListUsesExpectedMethod [
 	transport queueIncomingMessage: (
 		Dictionary new
@@ -134,14 +144,4 @@ OpenAICodexSessionTest >> testStatusListUsesExpectedMethod [
 			yourself).
 	session listMcpServerStatus.
 	self assert: ((transport outgoingMessages first) at: 'method') equals: 'mcpServerStatus/list'
-]
-
-{ #category : #tests }
-OpenAICodexSessionTest >> testStartThreadReturnsResultPayload [
-	transport queueIncomingMessage: (
-		Dictionary new
-			at: 'id' put: 1;
-			at: 'result' put: (Dictionary new at: 'thread' put: (Dictionary new at: 'id' put: 'thr_123'; yourself); yourself);
-			yourself).
-	self assert: (((session startThread) at: 'thread') at: 'id') equals: 'thr_123'
 ]

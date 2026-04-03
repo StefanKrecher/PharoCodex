@@ -1,26 +1,26 @@
 Class {
-	#name : #OpenAICodexLineSubprocess,
-	#superclass : #Object,
-	#category : #'OpenAI-Codex-Transport',
-	#package : #'OpenAI-Codex'
+	#name : 'OpenAICodexLineSubprocess',
+	#superclass : 'Object',
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 OpenAICodexLineSubprocess >> isRunning [
 	self subclassResponsibility
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexLineSubprocess >> nextLine [
 	self subclassResponsibility
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexLineSubprocess >> sendLine: aString [
 	self subclassResponsibility
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 OpenAICodexLineSubprocess >> stop [
 	self subclassResponsibility
 ]

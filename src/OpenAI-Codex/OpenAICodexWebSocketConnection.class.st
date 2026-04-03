@@ -1,26 +1,26 @@
 Class {
-	#name : #OpenAICodexWebSocketConnection,
-	#superclass : #Object,
-	#category : #'OpenAI-Codex-Transport-WebSocket',
-	#package : #'OpenAI-Codex'
+	#name : 'OpenAICodexWebSocketConnection',
+	#superclass : 'Object',
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 OpenAICodexWebSocketConnection >> close [
 	self subclassResponsibility
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 OpenAICodexWebSocketConnection >> isConnected [
 	self subclassResponsibility
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexWebSocketConnection >> readMessage [
 	self subclassResponsibility
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexWebSocketConnection >> sendMessage: aString [
 	self subclassResponsibility
 ]

@@ -1,11 +1,11 @@
 Class {
-	#name : #OpenAICodexZnWebSocketConnectionFactory,
-	#superclass : #OpenAICodexWebSocketConnectionFactory,
-	#category : #'OpenAI-Codex-Transport-WebSocket',
-	#package : #'OpenAI-Codex'
+	#name : 'OpenAICodexZnWebSocketConnectionFactory',
+	#superclass : 'OpenAICodexWebSocketConnectionFactory',
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }
 
-{ #category : #opening }
+{ #category : 'opening' }
 OpenAICodexZnWebSocketConnectionFactory >> openUrl: aString [
 	^ OpenAICodexZnWebSocketConnection on: (ZnWebSocket to: aString)
 ]

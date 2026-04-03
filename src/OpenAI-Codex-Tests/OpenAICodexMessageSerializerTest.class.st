@@ -1,20 +1,20 @@
 Class {
-	#name : #OpenAICodexMessageSerializerTest,
-	#superclass : #TestCase,
+	#name : 'OpenAICodexMessageSerializerTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'serializer'
 	],
-	#category : #'OpenAI-Codex-Tests-Core',
-	#package : #'OpenAI-Codex-Tests'
+	#category : 'OpenAI-Codex-Tests',
+	#package : 'OpenAI-Codex-Tests'
 }
 
-{ #category : #running }
+{ #category : 'running' }
 OpenAICodexMessageSerializerTest >> setUp [
 	super setUp.
 	serializer := OpenAICodexMessageSerializer new
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 OpenAICodexMessageSerializerTest >> testRoundTripDictionaryMessage [
 	| message decoded |
 	message := Dictionary new

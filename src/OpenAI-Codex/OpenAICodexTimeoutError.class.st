@@ -1,6 +1,6 @@
 Class {
-	#name : #OpenAICodexTimeoutError,
-	#superclass : #OpenAICodexError,
-	#category : #'OpenAI-Codex-Core',
-	#package : #'OpenAI-Codex'
+	#name : 'OpenAICodexTimeoutError',
+	#superclass : 'OpenAICodexError',
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }

@@ -1,21 +1,21 @@
 Class {
-	#name : #OpenAICodexFakeWebSocketConnection,
-	#superclass : #OpenAICodexWebSocketConnection,
+	#name : 'OpenAICodexFakeWebSocketConnection',
+	#superclass : 'OpenAICodexWebSocketConnection',
 	#instVars : [
 		'incomingMessages',
 		'outgoingMessages',
 		'connected'
 	],
-	#category : #'OpenAI-Codex-Tests-Support',
-	#package : #'OpenAI-Codex-Tests'
+	#category : 'OpenAI-Codex-Tests',
+	#package : 'OpenAI-Codex-Tests'
 }
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 OpenAICodexFakeWebSocketConnection >> close [
 	connected := false
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 OpenAICodexFakeWebSocketConnection >> initialize [
 	super initialize.
 	incomingMessages := OrderedCollection new.
@@ -23,28 +23,28 @@ OpenAICodexFakeWebSocketConnection >> initialize [
 	connected := true
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 OpenAICodexFakeWebSocketConnection >> isConnected [
 	^ connected
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexFakeWebSocketConnection >> nextIncomingMessagePut: aString [
 	incomingMessages add: aString
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexFakeWebSocketConnection >> outgoingMessages [
 	^ outgoingMessages copy
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexFakeWebSocketConnection >> readMessage [
 	incomingMessages ifEmpty: [ ^ nil ].
 	^ incomingMessages removeFirst
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexFakeWebSocketConnection >> sendMessage: aString [
 	outgoingMessages add: aString
 ]

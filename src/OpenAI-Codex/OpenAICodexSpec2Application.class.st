@@ -1,6 +1,6 @@
 Class {
-	#name : #OpenAICodexSpec2Application,
-	#superclass : #SpPresenter,
+	#name : 'OpenAICodexSpec2Application',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'session',
 		'currentThreadId',
@@ -20,16 +20,16 @@ Class {
 		'refreshButton',
 		'stopButton'
 	],
-	#category : #'OpenAI-Codex-UI',
-	#package : #'OpenAI-Codex'
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 OpenAICodexSpec2Application class >> open [
 	^ self new open
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> answerForQuestion: aQuestion [
 	| options labels selection answer |
 	options := aQuestion at: 'options' ifAbsent: [ nil ].
@@ -48,12 +48,12 @@ OpenAICodexSpec2Application >> answerForQuestion: aQuestion [
 		yourself
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> appendOutput: aString [
 	outputText text: (self outputTextContents , aString)
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 OpenAICodexSpec2Application >> connectSession [
 	| mcpStatus |
 	self stopSession.
@@ -86,7 +86,7 @@ OpenAICodexSpec2Application >> connectSession [
 				self writeOutput: ex messageText ] ]
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 OpenAICodexSpec2Application >> defaultLayout [
 	<spec: #default>
 	| connectionRow actionRow statusRow |
@@ -102,8 +102,8 @@ OpenAICodexSpec2Application >> defaultLayout [
 
 	actionRow := SpBoxLayout newLeftToRight
 		spacing: 5;
-		add: #connectButton withConstraints: [ :constraints | constraints width: 110 ];
-		add: #runButton withConstraints: [ :constraints | constraints width: 110 ];
+		add: #connectButton withConstraints: [ :constraints | constraints width: 120 ];
+		add: #runButton withConstraints: [ :constraints | constraints width: 130 ];
 		add: #refreshButton withConstraints: [ :constraints | constraints width: 110 ];
 		add: #stopButton withConstraints: [ :constraints | constraints width: 110 ];
 		yourself.
@@ -134,7 +134,7 @@ OpenAICodexSpec2Application >> defaultLayout [
 		yourself
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> flushPendingOutput [
 	| delta |
 	outputLock critical: [
@@ -147,7 +147,7 @@ OpenAICodexSpec2Application >> flushPendingOutput [
 	self appendOutput: delta
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> formatLines: aCollection [
 	^ String streamContents: [ :stream |
 		aCollection doWithIndex: [ :line :index |
@@ -155,7 +155,7 @@ OpenAICodexSpec2Application >> formatLines: aCollection [
 			stream nextPutAll: line asString ] ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> formatMcpStatus: aDictionary [
 	^ String streamContents: [ :stream |
 		stream
@@ -165,7 +165,7 @@ OpenAICodexSpec2Application >> formatMcpStatus: aDictionary [
 			nextPutAll: aDictionary printString ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> formatThreadReadResult: aDictionary [
 	| lastTurn items lines |
 	lastTurn := self lastTurnFromThreadRead: aDictionary.
@@ -177,14 +177,25 @@ OpenAICodexSpec2Application >> formatThreadReadResult: aDictionary [
 	^ self formatLines: lines
 ]
 
-{ #category : #private }
+{ #category : 'private' }
+OpenAICodexSpec2Application >> greenPlayIcon [
+	| green |
+	green := Color green darker.
+	^ (self iconNamed: #go)
+		collectColors: [ :each |
+			each alpha = 0
+				ifTrue: [ each ]
+				ifFalse: [ green alpha: each alpha ] ]
+]
+
+{ #category : 'private' }
 OpenAICodexSpec2Application >> handleAgentMessageDelta: aParams [
 	(self isCurrentThreadNotification: aParams) ifFalse: [ ^ self ].
 	(self isCurrentTurnNotification: aParams) ifFalse: [ ^ self ].
 	self queueOutput: (aParams at: 'delta' ifAbsent: [ '' ])
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> handleMcpToolCallProgress: aParams [
 	| progressLine |
 	(self isCurrentThreadNotification: aParams) ifFalse: [ ^ self ].
@@ -197,7 +208,7 @@ OpenAICodexSpec2Application >> handleMcpToolCallProgress: aParams [
 	self queueOutput: progressLine
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> handleNotificationAnnouncement: anAnnouncement [
 	| method params |
 	method := anAnnouncement method.
@@ -209,7 +220,7 @@ OpenAICodexSpec2Application >> handleNotificationAnnouncement: anAnnouncement [
 	method = 'error' ifTrue: [ ^ self handleTurnErrorNotification: params ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> handleTurnCompletedNotification: aParams [
 	| turn status |
 	(self isCurrentThreadNotification: aParams) ifFalse: [ ^ self ].
@@ -221,7 +232,7 @@ OpenAICodexSpec2Application >> handleTurnCompletedNotification: aParams [
 	self stopPolling
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> handleTurnErrorNotification: aParams [
 	self uiDo: [
 		self updateStatus: 'Turn error'.
@@ -232,7 +243,7 @@ OpenAICodexSpec2Application >> handleTurnErrorNotification: aParams [
 				nextPutAll: aParams printString ]) ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> handleTurnStartedNotification: aParams [
 	| turn |
 	(self isCurrentThreadNotification: aParams) ifFalse: [ ^ self ].
@@ -241,89 +252,7 @@ OpenAICodexSpec2Application >> handleTurnStartedNotification: aParams [
 	self uiDo: [ self updateStatus: 'Running...' ]
 ]
 
-{ #category : #private }
-OpenAICodexSpec2Application >> interactiveElicitationResponseFor: aRequest [
-	| params mode action content |
-	params := aRequest at: 'params'.
-	mode := params at: 'mode'.
-	mode = 'url' ifTrue: [
-		action := self uiCall: [
-			(UIManager default confirm: ((params at: 'message'), String crlf, (params at: 'url')))
-				ifTrue: [ 'accept' ]
-				ifFalse: [ 'cancel' ] ].
-		^ Dictionary new
-			at: 'action' put: action;
-			yourself ].
-	content := self uiCall: [ self interactiveFormContentFor: params ].
-	content ifNil: [
-		^ Dictionary new
-			at: 'action' put: 'cancel';
-			yourself ].
-	^ Dictionary new
-		at: 'action' put: 'accept';
-		at: 'content' put: content;
-		yourself
-]
-
-{ #category : #private }
-OpenAICodexSpec2Application >> interactiveFormContentFor: aParams [
-	| schema properties result |
-	schema := aParams at: 'requestedSchema' ifAbsent: [ ^ nil ].
-	properties := schema at: 'properties' ifAbsent: [ ^ Dictionary new ].
-	result := Dictionary new.
-	properties keysAndValuesDo: [ :key :propertySchema |
-		| title value |
-		title := propertySchema at: 'title' ifAbsent: [ key ].
-		value := self interactiveValueForSchema: propertySchema title: title.
-		value ifNil: [ ^ nil ].
-		result at: key put: value ].
-	^ result
-]
-
-{ #category : #private }
-OpenAICodexSpec2Application >> interactiveToolUserInputResponseFor: aRequest [
-	| params answers |
-	params := aRequest at: 'params'.
-	answers := self uiCall: [
-		| result |
-		result := Dictionary new.
-		(params at: 'questions') do: [ :question |
-			| answer |
-			answer := self answerForQuestion: question.
-			answer ifNil: [ ^ nil ].
-			result at: (question at: 'id') put: answer ].
-		result ].
-	answers ifNil: [ ^ Dictionary new at: 'answers' put: Dictionary new; yourself ].
-	^ Dictionary new
-		at: 'answers' put: answers;
-		yourself
-]
-
-{ #category : #private }
-OpenAICodexSpec2Application >> interactiveValueForSchema: aSchema title: aTitle [
-	| type options labels selection answer |
-	type := aSchema at: 'type' ifAbsent: [ 'string' ].
-	(type = 'boolean') ifTrue: [ ^ UIManager default confirm: aTitle ].
-	((aSchema includesKey: 'enum') and: [ type = 'string' ]) ifTrue: [
-		options := aSchema at: 'enum'.
-		labels := aSchema at: 'enumNames' ifAbsent: [ options ].
-		selection := UIManager default chooseFrom: labels title: aTitle.
-		selection = 0 ifTrue: [ ^ nil ].
-		^ options at: selection ].
-	((aSchema includesKey: 'oneOf') and: [ type = 'string' ]) ifTrue: [
-		options := aSchema at: 'oneOf'.
-		labels := options collect: [ :each | each at: 'title' ifAbsent: [ each at: 'const' ] ].
-		selection := UIManager default chooseFrom: labels title: aTitle.
-		selection = 0 ifTrue: [ ^ nil ].
-		^ (options at: selection) at: 'const' ].
-	answer := UIManager default request: aTitle.
-	answer ifNil: [ ^ nil ].
-	((type = 'integer') or: [ type = 'number' ]) ifTrue: [ ^ Number readFrom: answer readStream ].
-	(type = 'array') ifTrue: [ ^ (answer substrings: ',') collect: [ :each | each withBlanksTrimmed ] ].
-	^ answer
-]
-
-{ #category : #initialization }
+{ #category : 'initialization' }
 OpenAICodexSpec2Application >> initialize [
 	super initialize.
 	currentThreadId := nil.
@@ -333,7 +262,7 @@ OpenAICodexSpec2Application >> initialize [
 	flushScheduled := false
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 OpenAICodexSpec2Application >> initializePresenters [
 	urlInput := self newTextInput.
 	urlInput
@@ -349,6 +278,10 @@ OpenAICodexSpec2Application >> initializePresenters [
 		editable: true;
 		placeholder: 'Enter a Codex prompt';
 		text: 'Use pharo_eval to evaluate 23 + 42 and return only the result.'.
+	promptInput addShortcutWith: [ :action |
+		action
+			shortcutKey: PharoShortcuts current doItShortcut;
+			action: [ self runSelectedPrompt ] ].
 
 	outputText := self newText.
 	outputText
@@ -365,11 +298,12 @@ OpenAICodexSpec2Application >> initializePresenters [
 
 	connectButton := self newButton
 		label: 'Connect';
-		action: [ self connectSession ];
+		action: [ self toggleConnection ];
 		yourself.
 
 	runButton := self newButton
-		label: 'Run Prompt';
+		label: 'Do it all';
+		icon: self greenPlayIcon;
 		action: [ self runPrompt ];
 		enabled: false;
 		yourself.
@@ -396,7 +330,7 @@ OpenAICodexSpec2Application >> initializePresenters [
 		add: stopButton
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> installDefaultServerRequestHandlers [
 	session onCommandApprovalDo: [ :request |
 		Dictionary new
@@ -417,13 +351,95 @@ OpenAICodexSpec2Application >> installDefaultServerRequestHandlers [
 		self interactiveToolUserInputResponseFor: request ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> installNotificationHandlers [
 	session on: OpenAICodexNotificationAnnouncement do: [ :announcement |
 		self handleNotificationAnnouncement: announcement ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
+OpenAICodexSpec2Application >> interactiveElicitationResponseFor: aRequest [
+	| params mode action content |
+	params := aRequest at: 'params'.
+	mode := params at: 'mode'.
+	mode = 'url' ifTrue: [
+		action := self uiCall: [
+			(UIManager default confirm: ((params at: 'message'), String crlf, (params at: 'url')))
+				ifTrue: [ 'accept' ]
+				ifFalse: [ 'cancel' ] ].
+		^ Dictionary new
+			at: 'action' put: action;
+			yourself ].
+	content := self uiCall: [ self interactiveFormContentFor: params ].
+	content ifNil: [
+		^ Dictionary new
+			at: 'action' put: 'cancel';
+			yourself ].
+	^ Dictionary new
+		at: 'action' put: 'accept';
+		at: 'content' put: content;
+		yourself
+]
+
+{ #category : 'private' }
+OpenAICodexSpec2Application >> interactiveFormContentFor: aParams [
+	| schema properties result |
+	schema := aParams at: 'requestedSchema' ifAbsent: [ ^ nil ].
+	properties := schema at: 'properties' ifAbsent: [ ^ Dictionary new ].
+	result := Dictionary new.
+	properties keysAndValuesDo: [ :key :propertySchema |
+		| title value |
+		title := propertySchema at: 'title' ifAbsent: [ key ].
+		value := self interactiveValueForSchema: propertySchema title: title.
+		value ifNil: [ ^ nil ].
+		result at: key put: value ].
+	^ result
+]
+
+{ #category : 'private' }
+OpenAICodexSpec2Application >> interactiveToolUserInputResponseFor: aRequest [
+	| params answers |
+	params := aRequest at: 'params'.
+	answers := self uiCall: [
+		| result |
+		result := Dictionary new.
+		(params at: 'questions') do: [ :question |
+			| answer |
+			answer := self answerForQuestion: question.
+			answer ifNil: [ ^ nil ].
+			result at: (question at: 'id') put: answer ].
+		result ].
+	answers ifNil: [ ^ Dictionary new at: 'answers' put: Dictionary new; yourself ].
+	^ Dictionary new
+		at: 'answers' put: answers;
+		yourself
+]
+
+{ #category : 'private' }
+OpenAICodexSpec2Application >> interactiveValueForSchema: aSchema title: aTitle [
+	| type options labels selection answer |
+	type := aSchema at: 'type' ifAbsent: [ 'string' ].
+	(type = 'boolean') ifTrue: [ ^ UIManager default confirm: aTitle ].
+	((aSchema includesKey: 'enum') and: [ type = 'string' ]) ifTrue: [
+		options := aSchema at: 'enum'.
+		labels := aSchema at: 'enumNames' ifAbsent: [ options ].
+		selection := UIManager default chooseFrom: labels title: aTitle.
+		selection = 0 ifTrue: [ ^ nil ].
+		^ options at: selection ].
+	((aSchema includesKey: 'oneOf') and: [ type = 'string' ]) ifTrue: [
+		options := aSchema at: 'oneOf'.
+		labels := options collect: [ :each | each at: 'title' ifAbsent: [ each at: 'const' ] ].
+		selection := UIManager default chooseFrom: labels title: aTitle.
+		selection = 0 ifTrue: [ ^ nil ].
+		^ (options at: selection) at: 'const' ].
+	answer := UIManager default request: aTitle.
+	answer ifNil: [ ^ nil ].
+	((type = 'integer') or: [ type = 'number' ]) ifTrue: [ ^ Number readFrom: answer readStream ].
+	(type = 'array') ifTrue: [ ^ (answer substrings: ',') collect: [ :each | each withBlanksTrimmed ] ].
+	^ answer
+]
+
+{ #category : 'private' }
 OpenAICodexSpec2Application >> isCurrentThreadNotification: aParams [
 	| threadId |
 	threadId := aParams at: 'threadId' ifAbsent: [ ^ true ].
@@ -431,7 +447,7 @@ OpenAICodexSpec2Application >> isCurrentThreadNotification: aParams [
 	^ threadId = currentThreadId
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> isCurrentTurnNotification: aParams [
 	| turnId |
 	turnId := aParams at: 'turnId' ifAbsent: [ ^ true ].
@@ -439,19 +455,19 @@ OpenAICodexSpec2Application >> isCurrentTurnNotification: aParams [
 	^ turnId = currentTurnId
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> isTurnActive [
 	^ currentThreadId notNil and: [ currentTurnId notNil and: [ pollingProcess notNil ] ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> lastTurnFromThreadRead: aDictionary [
 	| turns |
 	turns := ((aDictionary at: 'thread') at: 'turns' ifAbsent: [ #() ]).
 	^ turns ifEmpty: [ nil ] ifNotEmpty: [ turns last ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> linesForThreadItem: anItem [
 	| type result lines |
 	type := anItem at: 'type' ifAbsent: [ 'unknown' ].
@@ -473,12 +489,12 @@ OpenAICodexSpec2Application >> linesForThreadItem: anItem [
 	^ lines
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexSpec2Application >> outputTextContents [
 	^ outputText text asString
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> pollThreadLoop [
 	[ session notNil and: [ currentThreadId notNil ] ] whileTrue: [
 		[ self refreshCurrentThread ]
@@ -491,7 +507,7 @@ OpenAICodexSpec2Application >> pollThreadLoop [
 		(Delay forSeconds: 2) wait ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> pollTurnStatusFrom: aThreadRead [
 	| lastTurn finished |
 	lastTurn := self lastTurnFromThreadRead: aThreadRead.
@@ -506,12 +522,12 @@ OpenAICodexSpec2Application >> pollTurnStatusFrom: aThreadRead [
 	finished ifTrue: [ self stopPolling ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> promptText [
 	^ promptInput text asString
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> queueOutput: aString [
 	outputLock critical: [
 		pendingOutput := pendingOutput , aString.
@@ -520,7 +536,7 @@ OpenAICodexSpec2Application >> queueOutput: aString [
 			self uiDo: [ self flushPendingOutput ] ] ]
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 OpenAICodexSpec2Application >> refreshCurrentThread [
 	| threadRead |
 	currentThreadId ifNil: [ ^ self uiDo: [ self writeOutput: 'No active thread.' ] ].
@@ -530,23 +546,12 @@ OpenAICodexSpec2Application >> refreshCurrentThread [
 	self pollTurnStatusFrom: threadRead
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 OpenAICodexSpec2Application >> runPrompt [
-	| prompt |
-	prompt := self promptText trimBoth.
-	prompt ifEmpty: [
-		^ self uiDo: [
-			self updateStatus: 'Missing prompt'.
-			self writeOutput: 'Enter a prompt first.' ] ].
-	session ifNil: [ self connectSession ].
-	session ifNil: [ ^ self ].
-	self uiDo: [
-		self updateStatus: 'Starting turn...'.
-		self writeOutput: '' ].
-	^ self runPrompt: prompt allowingRetry: true
+	^ self runPromptText: self promptText
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 OpenAICodexSpec2Application >> runPrompt: aPrompt allowingRetry: aBoolean [
 	| threadResponse turnResponse |
 	[
@@ -586,18 +591,48 @@ OpenAICodexSpec2Application >> runPrompt: aPrompt allowingRetry: aBoolean [
 			ex pass ]
 ]
 
-{ #category : #accessing }
+{ #category : 'private' }
+OpenAICodexSpec2Application >> runPromptText: aString [
+	| prompt |
+	prompt := aString trimBoth.
+	prompt ifEmpty: [
+		^ self uiDo: [
+			self updateStatus: 'Missing prompt'.
+			self writeOutput: 'Enter a prompt first.' ] ].
+	session ifNil: [ self connectSession ].
+	session ifNil: [ ^ self ].
+	self uiDo: [
+		self updateStatus: 'Starting turn...'.
+		self writeOutput: '' ].
+	^ self runPrompt: prompt allowingRetry: true
+]
+
+{ #category : 'actions' }
+OpenAICodexSpec2Application >> runSelectedPrompt [
+	^ self runPromptText: self selectedPromptTextOrLine
+]
+
+{ #category : 'private' }
+OpenAICodexSpec2Application >> selectedPromptTextOrLine [
+	| selection |
+	selection := promptInput selectedText.
+	selection ifNotEmpty: [ ^ selection ].
+	promptInput selectLine.
+	^ promptInput selectedText
+]
+
+{ #category : 'accessing' }
 OpenAICodexSpec2Application >> serverUrl [
 	^ urlInput text asString
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> shouldRetryAfterProtocolError: anError [
 	^ anError messageText includesSubstring: 'rollout'
 		and: [ anError messageText includesSubstring: 'is empty' ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> startPolling [
 	self stopPolling.
 	self uiDo: [
@@ -606,12 +641,12 @@ OpenAICodexSpec2Application >> startPolling [
 	pollingProcess := [ self pollThreadLoop ] forkNamed: 'OpenAICodex Spec2 Poller'
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexSpec2Application >> statusLabel [
 	^ statusLabel
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 OpenAICodexSpec2Application >> stopPolling [
 	pollingProcess ifNotNil: [
 		pollingProcess terminate.
@@ -623,7 +658,7 @@ OpenAICodexSpec2Application >> stopPolling [
 			ifTrue: [ self updateStatus: 'Monitoring stopped' ] ]
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 OpenAICodexSpec2Application >> stopSession [
 	self stopPolling.
 	session ifNotNil: [
@@ -631,10 +666,22 @@ OpenAICodexSpec2Application >> stopSession [
 		session := nil ].
 	currentThreadId := nil.
 	currentTurnId := nil.
-	self uiDo: [ self updateConnectionStatusDisconnected ]
+	self uiDo: [
+		self updateConnectionStatusDisconnected.
+		self updateStatus: 'Disconnected'.
+		runButton ifNotNil: [ runButton enabled: false ].
+		refreshButton ifNotNil: [ refreshButton enabled: false ].
+		stopButton ifNotNil: [ stopButton enabled: false ] ]
 ]
 
-{ #category : #private }
+{ #category : 'actions' }
+OpenAICodexSpec2Application >> toggleConnection [
+	session
+		ifNil: [ self connectSession ]
+		ifNotNil: [ self stopSession ]
+]
+
+{ #category : 'private' }
 OpenAICodexSpec2Application >> turnIsFinished: aTurnDictionary [
 	| status |
 	aTurnDictionary ifNil: [ ^ false ].
@@ -642,7 +689,7 @@ OpenAICodexSpec2Application >> turnIsFinished: aTurnDictionary [
 	^ #( 'completed' 'failed' 'interrupted' ) includes: status
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> uiCall: aBlock [
 	| semaphore result error |
 	semaphore := Semaphore new.
@@ -656,24 +703,26 @@ OpenAICodexSpec2Application >> uiCall: aBlock [
 	^ result
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> uiDo: aBlock [
 	UIManager default defer: aBlock
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> updateConnectionStatusConnected [
 	connectionStatusLabel label: 'Connected'.
-	connectionStatusLabel color: Color green darker
+	connectionStatusLabel color: Color green darker.
+	connectButton ifNotNil: [ connectButton label: 'Disconnect' ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> updateConnectionStatusDisconnected [
 	connectionStatusLabel label: 'Disconnected'.
-	connectionStatusLabel color: Color red
+	connectionStatusLabel color: Color red.
+	connectButton ifNotNil: [ connectButton label: 'Connect' ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> updateStatus: aString [
 	statusLabel label: aString.
 	(aString includesSubstring: 'Connected') ifTrue: [ statusLabel color: Color green darker ].
@@ -687,7 +736,7 @@ OpenAICodexSpec2Application >> updateStatus: aString [
 	(aString includesSubstring: 'Monitoring stopped') ifTrue: [ statusLabel color: Color gray darker ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> waitForCompletedTurnReadAttempt [
 	^ [ session readThread: currentThreadId includeTurns: true ]
 		on: OpenAICodexProtocolError
@@ -697,12 +746,17 @@ OpenAICodexSpec2Application >> waitForCompletedTurnReadAttempt [
 				ifFalse: [ ex pass ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'initialization' }
+OpenAICodexSpec2Application >> windowTitle [
+	^ 'Codex'
+]
+
+{ #category : 'accessing' }
 OpenAICodexSpec2Application >> workingDirectory [
 	^ workingDirectoryInput text asString
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 OpenAICodexSpec2Application >> writeOutput: aString [
 	outputText text: aString
 ]

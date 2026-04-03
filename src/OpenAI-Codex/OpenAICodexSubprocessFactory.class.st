@@ -1,29 +1,29 @@
 Class {
-	#name : #OpenAICodexSubprocessFactory,
-	#superclass : #Object,
+	#name : 'OpenAICodexSubprocessFactory',
+	#superclass : 'Object',
 	#classVars : [
 		'Current'
 	],
-	#category : #'OpenAI-Codex-Transport',
-	#package : #'OpenAI-Codex'
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexSubprocessFactory class >> current [
 	^ Current ifNil: [ Current := OpenAICodexNullSubprocessFactory new ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexSubprocessFactory class >> current: aFactory [
 	Current := aFactory
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexSubprocessFactory class >> resetCurrent [
 	Current := nil
 ]
 
-{ #category : #spawning }
+{ #category : 'spawning' }
 OpenAICodexSubprocessFactory >> spawnCommand: aCommand arguments: arguments workingDirectory: aPathOrNil [
 	self subclassResponsibility
 ]

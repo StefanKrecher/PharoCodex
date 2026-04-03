@@ -1,26 +1,26 @@
 Class {
-	#name : #OpenAICodexApprovalDecision,
-	#superclass : #Object,
-	#category : #'OpenAI-Codex-Core',
-	#package : #'OpenAI-Codex'
+	#name : 'OpenAICodexApprovalDecision',
+	#superclass : 'Object',
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 OpenAICodexApprovalDecision class >> accept [
 	^ 'accept'
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 OpenAICodexApprovalDecision class >> acceptForSession [
 	^ 'acceptForSession'
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 OpenAICodexApprovalDecision class >> cancel [
 	^ 'cancel'
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 OpenAICodexApprovalDecision class >> decline [
 	^ 'decline'
 ]

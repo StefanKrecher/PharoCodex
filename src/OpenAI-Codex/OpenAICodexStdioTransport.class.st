@@ -1,6 +1,6 @@
 Class {
-	#name : #OpenAICodexStdioTransport,
-	#superclass : #OpenAICodexTransport,
+	#name : 'OpenAICodexStdioTransport',
+	#superclass : 'OpenAICodexTransport',
 	#instVars : [
 		'command',
 		'arguments',
@@ -9,11 +9,11 @@ Class {
 		'subprocess',
 		'serializer'
 	],
-	#category : #'OpenAI-Codex-Transport',
-	#package : #'OpenAI-Codex'
+	#category : 'OpenAI-Codex',
+	#package : 'OpenAI-Codex'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 OpenAICodexStdioTransport class >> command: aString arguments: aCollection [
 	^ self new
 		command: aString;
@@ -21,27 +21,27 @@ OpenAICodexStdioTransport class >> command: aString arguments: aCollection [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexStdioTransport >> arguments [
 	^ arguments ifNil: [ #() ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexStdioTransport >> arguments: aCollection [
 	arguments := aCollection asArray
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexStdioTransport >> command [
 	^ command ifNil: [ 'codex' ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexStdioTransport >> command: aString [
 	command := aString
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 OpenAICodexStdioTransport >> initialize [
 	super initialize.
 	serializer := OpenAICodexMessageSerializer new.
@@ -49,12 +49,12 @@ OpenAICodexStdioTransport >> initialize [
 	arguments := #( 'app-server' )
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 OpenAICodexStdioTransport >> isStarted [
 	^ subprocess notNil and: [ subprocess isRunning ]
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexStdioTransport >> nextMessage [
 	| line |
 	subprocess ifNil: [ ^ nil ].
@@ -63,13 +63,13 @@ OpenAICodexStdioTransport >> nextMessage [
 	^ serializer deserializeMessage: line
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 OpenAICodexStdioTransport >> sendMessage: aDictionary [
 	subprocess ifNil: [ OpenAICodexTransportError signal: 'Cannot send before transport start' ].
 	subprocess sendLine: (serializer serializeMessage: aDictionary)
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 OpenAICodexStdioTransport >> start [
 	subprocess ifNotNil: [ ^ self ].
 	subprocess := subprocessFactory
@@ -78,19 +78,19 @@ OpenAICodexStdioTransport >> start [
 		workingDirectory: workingDirectory
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 OpenAICodexStdioTransport >> stop [
 	subprocess ifNil: [ ^ self ].
 	subprocess stop.
 	subprocess := nil
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexStdioTransport >> subprocessFactory: aFactory [
 	subprocessFactory := aFactory
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 OpenAICodexStdioTransport >> workingDirectory: aStringOrNil [
 	workingDirectory := aStringOrNil
 ]
